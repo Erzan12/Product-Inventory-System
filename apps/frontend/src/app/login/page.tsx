@@ -58,7 +58,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const response = await api.post('/auth/login', formData);
+      const response = await api.post('/api/auth/login', formData);
       const { access_token } = response.data;
       
       localStorage.setItem('token', access_token);
