@@ -6,7 +6,7 @@ export function useAddToCart() {
 
   return useMutation({
     mutationFn: (payload: { productId: number; quantity: number }) =>
-      api.post('/orders/my-cart', payload),
+      api.post('/api/orders/my-cart', payload),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });

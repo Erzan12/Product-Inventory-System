@@ -1,6 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -69,10 +69,10 @@ api.interceptors.response.use(
 // Auth API helpers
 export const authApi = {
   login: (email: string, password: string) =>
-    api.post('/auth/login', { email, password }),
+    api.post('/api/auth/login', { email, password }),
   
   register: (email: string, password: string, role?: string) =>
-    api.post('/auth/register', { email, password, role }),
+    api.post('/api/auth/register', { email, password, role }),
 };
 
 // Product API helpers
@@ -88,7 +88,7 @@ export const productsApi = {
 
 // Cart API helpers
 export const cartApi = {
-  getCart: () => api.get('/orders/my-cart'),
+  getCart: () => api.get('api/orders/my-cart'),
   addToCart: (productId: number, quantity: number) =>
     api.post('/orders/my-cart', { productId, quantity }),
   updateCartItem: (productId: number, quantity: number) =>
