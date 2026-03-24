@@ -29,15 +29,17 @@ async function bootstrap() {
 
   // ✅ Enable CORS for frontend on ports 3000 and 3001
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: ['http://localhost:3000'],
     credentials: true, // Only needed if you use cookies/auth
   });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist:true, forbidNonWhitelisted: true}));
 
-  app.listen(3000, () => {
-    console.log("Server is running at http://localhost:3000")
-    console.log("Swagger API is ruuning at http://localhost:3000/api")
+  app.listen(3001, () => {
+    console.log("Server is running at http://localhost:3001")
+    console.log("Swagger API is ruuning at http://localhost:3001/api")
   })
+
+  app.setGlobalPrefix('api');
 }
 bootstrap();
