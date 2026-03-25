@@ -13,6 +13,11 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useProducts } from '@/hooks/useProducts';
 import ProductCard from '@/components/ProductCard';
+import { Hero } from '@/components/core/hero';
+import { Categories } from '@/components/core/categories';
+import { FeaturedProducts } from '@/components/core/featured-products';
+import { Newsletter } from '@/components/core/newsletter';
+import { Footer } from '@/components/core/footer';
 
 export default function Home() {
   // const { data: products, isLoading, isError } = useProducts();
@@ -22,11 +27,11 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      {/* <Hero />
+      <Hero />
       <Categories />
       <FeaturedProducts />
       <Newsletter />
-      <Footer /> */}
+      <Footer />
 
       {/* Show setup tooltip only when Shopify is not configured */}
       {/* {!isShopifyConfigured && <SetupTooltip />} */}

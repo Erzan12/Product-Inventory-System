@@ -9,7 +9,7 @@ import { useCart } from '@/hooks/useCart';
 import { Inter } from "next/font/google";
 import { CartDrawer } from '@/components/cart-drawer';
 import { CartProvider } from "@/contexts/cart-context";
-import { Navbar } from '@/components/navbar';
+import { Navbar } from '@/components/core/navbar';
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
