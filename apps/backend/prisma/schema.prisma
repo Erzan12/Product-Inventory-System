@@ -35,6 +35,7 @@ model User {
   updatedAt   DateTime     @updatedAt
   CartItem    CartItem[]
   userProfile UserProfile?
+  stores      Store[]
 }
 
 model UserProfile {
@@ -54,23 +55,40 @@ model UserProfile {
 model Category {
   id        Int       @id @default(autoincrement())
   name      String    @unique
+  slug      String    @unique
   products  Product[] // One-to-many relationship
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
 
 model Product {
-  id          Int         @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String?
   price       Float
   quantity    Int
   categoryId  Int?
-  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  orderItems  OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  CartItem    CartItem[]
+  slug        String   @unique
+  storeId     Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  store    Store     @relation(fields: [storeId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  CartItem   CartItem[]
+  images     String[] // Simple array of URLs for now
+  orderItems OrderItem[]
+}
+
+model Store {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  slug      String    @unique // e.g., "my-awesome-store"
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  products  Product[]
+  createdAt DateTime  @default(now())
 }
 
 model Order {
