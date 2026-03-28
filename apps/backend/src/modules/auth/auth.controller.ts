@@ -1,10 +1,10 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LogInDto } from './dto/log-in.dto';
 import { Public } from '../../common/decorators/public.decorator';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
-import { ApiPostResponse } from '../../shared/helpers/swagger-api-response.helper';
+import { ApiLoginResponse, ApiPostResponse } from '../../shared/helpers/swagger-api-response.helper';
 import { Request, Response } from 'express';
 import { SessionUser } from '../../shared/types/session-user.decorator';
 import { RequestUser } from '../../shared/types/request-user.interface';
@@ -71,5 +71,14 @@ export class AuthController {
         @Body() dto: CreateUserDto,
     ) {
         return this.authService.register(dto)
+    }
+
+    @Get('/verify')
+    @ApiOperation({ summary: 'Verify user' })
+    @ApiLoginResponse('User has been verified')
+    verify(
+        @SessionUser() requsetUser: RequestUser
+    ) {
+        return this.authService.getUser(requsetUser);
     }
 }

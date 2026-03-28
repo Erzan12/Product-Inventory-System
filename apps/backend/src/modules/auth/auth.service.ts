@@ -143,4 +143,34 @@ export class AuthService {
 
         return user;
     }
+
+    async getUser(requestUser: RequestUser) {
+        if (!requestUser.id) {
+            throw new UnauthorizedException('Invalid or missing token');
+        };
+
+        const user = await this.prisma.user.findUnique({
+            where: { id: requestUser.id }, //enforce ownership to current user
+            include: {
+                orders: true,
+                stores: true,
+                cartItem: true,
+                userProfile: true,
+                storeMembers: true,
+                reviews: true,
+            }
+        })
+
+        if (!user || user.is_active !== true) {
+            throw new UnauthorizedException('User not found or invalid token');
+        };
+
+        return {
+            status: 'success',
+            message: 'User validated successfully',
+            data: {
+                user
+            }
+        }
+    }
 }
