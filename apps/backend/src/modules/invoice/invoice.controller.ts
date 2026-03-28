@@ -1,6 +1,5 @@
-import { Controller, Get, Param, ParseIntPipe, Res } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
-import { Response } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiBearerAuth()

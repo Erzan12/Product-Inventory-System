@@ -1,17 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
-import { Authenticated, Roles, Public } from '../../common/decorators/public.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles, Public } from '../../common/decorators/public.decorator';
 import { GetProductsQueryDto } from './dto/get-product-query.dto';
 
-@ApiBearerAuth()
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   // Admin only - Create product
-  @Authenticated()
   @Post()
   @Roles('admin')
   create(@Body() createProductDto: CreateProductDto) {
@@ -37,7 +34,6 @@ export class ProductController {
   }
 
   // Admin only - Update product
-  @Authenticated()
   @Patch(':id')
   @Roles('admin')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
@@ -45,7 +41,6 @@ export class ProductController {
   }
 
   // Admin only - Delete product
-  @Authenticated()
   @Delete(':id')
   @Roles('admin')
   remove(@Param('id') id: string) {
@@ -72,7 +67,6 @@ export class ProductController {
   // }
 
   // Admin only - Reorder recommendations
-  @Authenticated()
   @Get('reorder-recommendations')
   @Roles('admin')
   getReorderRecommendations(

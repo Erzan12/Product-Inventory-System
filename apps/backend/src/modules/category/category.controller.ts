@@ -2,16 +2,12 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Authenticated, Roles, Public } from '../common/decorators/public.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { Public, Roles } from '../../common/decorators/public.decorator';
 
-@ApiBearerAuth()
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  // Admin only - Create category
-  @Authenticated()
   @Post()
   @Roles('admin')
   create(@Body() createCategoryDto: CreateCategoryDto) {
@@ -32,8 +28,6 @@ export class CategoryController {
     return this.categoryService.findOne(+id);
   }
 
-  // Admin only - Update category
-  @Authenticated()
   @Patch(':id')
   @Roles('admin')
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
@@ -41,7 +35,6 @@ export class CategoryController {
   }
 
   // Admin only - Delete category
-  @Authenticated()
   @Delete(':id')
   @Roles('admin')
   remove(@Param('id') id: string) {

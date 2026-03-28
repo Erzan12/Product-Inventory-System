@@ -3,11 +3,12 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 import { CreateOrderDto } from './dto/order.dto';
 import { UpdateOrderStatusDto } from './dto/order.dto';
 import * as streamBuffers from 'stream-buffers';
-import * as PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit';
 import { CartService } from '../cart/cart.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { OrderStatus } from '../../shared/constants/enums.decorator';
 import { MailService } from '../mail/mail.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class OrderService {
@@ -335,42 +336,73 @@ export class OrderService {
       }
 
       // Calculate total price with tax
+      let subTotal = new Prisma.Decimal(0);
 
-      const taxRate = 0.12;
-      let subTotal = 0;
+      // const itemsData = cartItems.map((item) => {
+      //   const itemTotal = item.quantity * item.product.price;
+      //   subTotal += itemTotal;
+      //   return {
+      //     productId: item.productId,
+      //     quantity: item.quantity,
+      //     price: item.product.price,
+      //   };
+      // });
 
-      const itemsData = cartItems.map((item) => {
-        const itemTotal = item.quantity * item.product.price;
-        subTotal += itemTotal;
-        return {
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.product.price,
+      // const itemsData = cartItems.map((item) => {
+      //   const itemTotal = item.product.price.mul(item.quantity);
+      //   subTotal = subTotal.add(itemTotal);
+
+      //   return {
+      //     quantity: item.quantity,
+      //     price: item.product.price, // keep Decimal
+      //     product: {
+      //       connect: { id: item.productId }, // ✅ FIX
+      //     },
+      //   };
+      // });
+
+      const itemsData = cartItems.map(item => ({
+        quantity: item.quantity,
+        price: item.product.price.toNumber(), // ✅ convert Decimal to number
+        product: { connect: { id: item.productId } },
+      }));
+
+      // const tax = subTotal * taxRate;
+      // const total = subTotal + tax;
+
+      const taxRate = new Prisma.Decimal(0.12);
+      const tax = subTotal.mul(taxRate);
+      const total = subTotal.add(tax);
+
+      type OrderWithUserAndItems = Prisma.OrderGetPayload<{
+        include: {
+          user: true;
+          items: { include: { product: true } };
         };
-      });
+      }>;
 
-      const tax = subTotal * taxRate;
-      const total = subTotal + tax;
-
-      const order = await this.prisma.order.create({
+      const order: OrderWithUserAndItems = await tx.order.create({
         data: {
           userId,
-          total,
-          items: {
-            create: itemsData
-          },
+          total: total.toNumber(),
+          items: { create: itemsData },
         },
         include: {
-          items: {
-            include: { 
-              product: true, // ensures you get `product.name`
-            },
-          },
+          items: { include: { product: true } },
           user: true,
         },
       });
-        console.log('Calculated total:', total);
-          // Decrement product quantities
+
+      // fetch with relations
+      // const order = await tx.order.findUnique({
+      //   where: { id: orderCreated.id },
+      //   include: {
+      //     user: true,
+      //     items: { include: { product: true } },
+      //   },
+      // });
+      console.log('Calculated total:', total);
+      // Decrement product quantities
       for (const item of cartItems) {
         await tx.inventory.update({
           where: { id: item.productId },
@@ -406,9 +438,9 @@ export class OrderService {
         .font('Helvetica')
         .fontSize(12)
         .fillColor('black')
-        .text(`Invoice #: ${order.id}`)
+        .text(`Invoice #: ${order?.user.id}`)
         .text(`Date: ${new Date().toLocaleDateString()}`)
-        .text(`Customer Email: ${order.user.email}`)
+        .text(`Customer Email: ${order?.user.email}`)
         .moveDown(2);
 
       // === Table Column Layout ===
@@ -452,7 +484,7 @@ export class OrderService {
 
       doc.font('Helvetica').fontSize(12);
 
-      order.items.forEach((item) => {
+      order?.items.forEach((item) => {
         const y = doc.y; // Capture current Y before writing the row
         const subtotal = item.quantity * item.price;
 
@@ -495,16 +527,28 @@ export class OrderService {
         .stroke()
         .moveDown(0.5);
 
+      // doc
+      //   .font('Helvetica-Bold')
+      //   .fontSize(12)
+
+      //   .moveDown(0.5)
+      //   .text(`Tax (12%): Php${tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, subtotalX, doc.y, {
+      //     width: subtotalWidth,
+      //   })
+      //   .moveDown(0.5)
+      //   .text(`Total: Php${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, subtotalX, doc.y, {
+      //     width: subtotalWidth,
+      //   });
+
       doc
         .font('Helvetica-Bold')
         .fontSize(12)
-
         .moveDown(0.5)
-        .text(`Tax (12%): Php${tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, subtotalX, doc.y, {
+        .text(`Tax (12%): Php${tax.toNumber().toLocaleString(undefined, { minimumFractionDigits: 2 })}`, {
           width: subtotalWidth,
         })
         .moveDown(0.5)
-        .text(`Total: Php${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, subtotalX, doc.y, {
+        .text(`Total: Php${total.toNumber().toLocaleString(undefined, { minimumFractionDigits: 2 })}`, {
           width: subtotalWidth,
         });
 
@@ -534,13 +578,13 @@ export class OrderService {
       const htmlContent = `
         <div style="font-family: Arial, sans-serif; padding: 16px;">
           <h2 style="color: #2b2e4a;">Thank you for your order!</h2>
-          <p>Hi ${order.user.email},</p>
+          <p>Hi ${order?.user.email},</p>
           <p>We appreciate your purchase. Please find your invoice attached below.</p>
           <hr />
-          <p><strong>Order ID:</strong> ${order.id}</p>
-          <p><strong>Subtotal:</strong> ₱${subTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
-          <p><strong>Tax (12%):</strong> ₱${tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
-          <p><strong>Total:</strong> ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+          <p><strong>Order ID:</strong> ${order?.id}</p>
+          <p><strong>Subtotal:</strong> ₱${subTotal.toNumber().toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+          <p><strong>Tax (12%):</strong> ₱${tax.toNumber().toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+          <p><strong>Total:</strong> ₱${total.toNumber().toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
           <p>If you have any questions, feel free to reply to this email.</p>
           <br />
           <p>Best regards,<br><strong>Dummy Business</strong></p>

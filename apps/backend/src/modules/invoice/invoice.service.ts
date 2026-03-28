@@ -3,6 +3,7 @@ import { Response } from 'express';
 import * as nodemailer from 'nodemailer';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RESPONSE_MESSAGES } from '../../common/constants/response-messages.constant';
+import { OrderStatus } from '../../shared/constants/enums.decorator';
 
 
 @Injectable()
@@ -25,7 +26,7 @@ export class InvoiceService {
         }
 
         //Reject invoice if order is still pending
-        if (order.status === 'pending') {
+        if (order.status === OrderStatus.PENDING) {
             throw new BadRequestException({
             message: RESPONSE_MESSAGES.INVOICES.ORDER_PAYMENT_PENDING,
             status: 'InvoiceGenerationRejected',

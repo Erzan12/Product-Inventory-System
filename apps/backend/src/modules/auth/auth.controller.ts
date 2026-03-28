@@ -1,17 +1,15 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LogInDto } from './dto/log-in.dto';
-import { Authenticated, Public } from '../../common/decorators/public.decorator';
+import { Public } from '../../common/decorators/public.decorator';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { ApiPostResponse } from '../../shared/helpers/swagger-api-response.helper';
 import { Request, Response } from 'express';
 import { SessionUser } from '../../shared/types/session-user.decorator';
 import { RequestUser } from '../../shared/types/request-user.interface';
-import { JwtAuthGuard } from '../../common/guard/jwt-auth.guard';
 import { AuthenticatedRequest } from '../../shared/types/interface';
 
-@Authenticated()
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) {}
@@ -39,7 +37,6 @@ export class AuthController {
         return result;
     }
 
-    // @UseGuards(JwtAuthGuard)
     @Post('logout')
     @ApiOperation({ summary: 'User will logout' })
     @ApiPostResponse('User logout successfully')

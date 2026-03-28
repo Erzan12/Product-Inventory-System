@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-import { RESPONSE_MESSAGES } from "../common/constants/response-messages.constant";
-import { successResponse } from "../common/helpers/response-helper";
+import { PrismaService } from "../../prisma/prisma.service";
+import { RESPONSE_MESSAGES } from "../../common/constants/response-messages.constant";
+import { successResponse } from "../../common/helpers/response-helper";
 
 @Injectable()
 export class CartService {
@@ -18,8 +18,16 @@ export class CartService {
     async addToCart(userId: number, productId: number, quantity: number) {
         console.log('Adding to cart:', { userId, productId, quantity }); // Debug log
 
-        const product = await this.prisma.product.findUnique({
+        const product = await this.prisma.inventory.findUnique({
             where: { id: productId },
+            include: {
+                product: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                }
+            }
         });
 
         if (!product) {
@@ -34,7 +42,7 @@ export class CartService {
 
         if (totalRequestedQuantity > product.quantity) {
             throw new BadRequestException(
-                `Cannot add ${quantity} of "${product.name}". Only ${product.quantity} left in stock.`
+                `Cannot add ${quantity} of "${product.product.name}". Only ${product.quantity} left in stock.`
             );
         }
 
@@ -52,8 +60,16 @@ export class CartService {
 
     async updateQuantity(userId: number, productId: number, quantity: number) {
         
-        const product = await this.prisma.product.findUnique({
+        const product = await this.prisma.inventory.findUnique({
             where: { id: productId },
+            include: {
+                product: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                }
+            }
         });
 
         if (!product) {
@@ -71,7 +87,7 @@ export class CartService {
         if (quantity > product.quantity) {
         throw new BadRequestException(
             RESPONSE_MESSAGES.CART.INSUFFICIENT_STOCK(
-            product.name,
+            product.product.name,
             product.quantity,
             quantity
             )

@@ -27,7 +27,6 @@ export class ProductService {
           name,
           description,
           price,
-          quantity,
           categoryId,
           slug,
           storeId

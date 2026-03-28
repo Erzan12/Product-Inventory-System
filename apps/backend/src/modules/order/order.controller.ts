@@ -1,17 +1,13 @@
 import { Controller, Post, Body, Request, Patch, Param, Get, Req, ParseIntPipe, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './dto/order.dto';
-import { Authenticated, Roles, Public } from '../common/decorators/public.decorator';
-import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { UpdateOrderStatusDto } from './dto/order.dto';
+import {  Roles } from '../../common/decorators/public.decorator';
 
-@ApiBearerAuth()
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   // Admin only - Get all orders
-  @Authenticated()
   @Get()
   @Roles('admin')
   getAllOrders() {
@@ -19,7 +15,6 @@ export class OrderController {
   }
 
   // Admin only - Update order status
-  @Authenticated()
   @Patch(':id/status')
   @Roles('admin')
   updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) {
@@ -27,7 +22,6 @@ export class OrderController {
   }
 
   // Admin only - Get product order history
-  @Authenticated()
   @Get('product/:productId/history')
   @Roles('admin')
   getProductOrderHistory(@Param('productId', ParseIntPipe) productId: number) {
@@ -35,7 +29,6 @@ export class OrderController {
   }
 
   // Admin only - Sales trends
-  @Authenticated()
   @Get('sales-trends')
   @Roles('admin')
   getSalesTrends(@Query('period') period: 'day' | 'month' = 'day' ) {
@@ -43,14 +36,12 @@ export class OrderController {
   }
 
   // User - Get my orders
-  @Authenticated()
   @Get('my')
   async getMyOrders(@Req() req) {
     return this.orderService.getMyOrders(req.user.userId);
   }
 
   // User - Checkout
-  @Authenticated()
   @Post('checkout')
   checkout(@Request() req) {
     return this.orderService.checkout(req.user.userId);
