@@ -13,7 +13,7 @@ export function Navbar() {
   const { state, dispatch } = useCart()
 
   // Get dynamic store name
-  const storeName = "My Store";
+  const storeName = "ShopStack";
 
   // Function to scroll to categories section
   const scrollToCategories = () => {
