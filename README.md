@@ -35,7 +35,7 @@ ShopStack follows a **full-stack architecture**:
 * **Backend:** NestJS (apps/api)
 * **Monorepo:** Turborepo
 * **Language:** TypeScript
-* **Database:** (Add your DB here — e.g., PostgreSQL, MongoDB)
+* **Database:** (PostgreSQl)
 
 ---
 
