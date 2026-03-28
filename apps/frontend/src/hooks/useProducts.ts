@@ -7,6 +7,7 @@ export interface ProductResponse {
     totalItems: number;
     page: number;
     lastPage: number;
+    limit: number;
   };
 }
 

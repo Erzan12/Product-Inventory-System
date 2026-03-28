@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { getProducts, getProduct, getCollections, type ShopifyProduct, type ShopifyCollection } from "@/lib/shopify"
+import { getProducts, getProduct, getCollections, type ShopifyProduct, type ShopifyCollection } from "@/lib/shopify/shopify"
 
 export function useProducts() {
   const [products, setProducts] = useState<ShopifyProduct[]>([])
