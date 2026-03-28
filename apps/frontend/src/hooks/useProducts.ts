@@ -10,7 +10,7 @@ export interface ProductResponse {
   };
 }
 
-export function useProducts(params?: { category?: string; search?: string; page?: number }) {
+export function useProducts(params?: { category?: string; search?: string; page?: number, limit?: number; }) {
   return useQuery({
     queryKey: ['products', params],
     queryFn: async () => {
