@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, HttpException, HttpStatus, BadRequestException, ConflictException  } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateProductDto } from './dto/create-product.dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { CreateProductDto } from './dto/product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { buildErrorResponse } from '../common/helpers/response-helper';
-import { RESPONSE_MESSAGES } from '../common/constants/response-messages.constant';
+import { buildErrorResponse } from '../../common/helpers/response-helper';
+import { RESPONSE_MESSAGES } from '../../common/constants/response-messages.constant';
 import { GetProductsQueryDto } from './dto/get-product-query.dto';
 
 @Injectable()

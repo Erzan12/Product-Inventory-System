@@ -4,7 +4,7 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { PrismaService } from '../prisma/prisma.service';
 import { CartService } from '../cart/cart.service';
-import { MailModule } from '../mail/mail.module';
+import { MailModule } from '../modules/mail/mail.module';
 
 @Module({
   imports: [MailModule],

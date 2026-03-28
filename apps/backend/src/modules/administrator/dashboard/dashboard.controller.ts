@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { Authenticated, Roles } from '../../common/decorators/public.decorator';
+import { Authenticated, Roles } from '../../../common/decorators/public.decorator';
 import { DashboardService } from './dashboard.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 

@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Response } from 'express';
 import * as nodemailer from 'nodemailer';
-import { PrismaService } from '../prisma/prisma.service';
-import { RESPONSE_MESSAGES } from '../common/constants/response-messages.constant';
+import { PrismaService } from '../../prisma/prisma.service';
+import { RESPONSE_MESSAGES } from '../../common/constants/response-messages.constant';
 
 
 @Injectable()

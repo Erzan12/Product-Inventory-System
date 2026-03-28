@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query} from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
+import { CreateProductDto } from './dto/product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { RestockProductDto } from './dto/restock-product.dto';
-import { Authenticated, Roles, Public } from '../common/decorators/public.decorator';
+import { Authenticated, Roles, Public } from '../../common/decorators/public.decorator';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { GetProductsQueryDto } from './dto/get-product-query.dto';
 

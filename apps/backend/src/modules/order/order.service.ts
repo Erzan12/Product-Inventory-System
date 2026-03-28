@@ -5,7 +5,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto, OrderStatus } from './dto/update-order-status.dto';
 import * as streamBuffers from 'stream-buffers';
 import * as PDFDocument from 'pdfkit';
-import { MailService } from '../mail/mail.service';
+import { MailService } from '../modules/mail/mail.service';
 import { Product } from '../product/entities/product.entity';
 import { CartService } from '../cart/cart.service';
 
