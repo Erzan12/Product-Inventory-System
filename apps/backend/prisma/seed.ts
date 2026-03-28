@@ -72,14 +72,16 @@ async function main() {
   const rand = (min: number, max: number) =>
     Math.floor(Math.random() * (max - min + 1)) + min;
 
-  const priceRanges = {
+  type CategoryKey = 'electronics' | 'fashion' | 'lifestyle' | 'accessories';
+
+  const priceRanges: Record<CategoryKey, number[]> = {
     electronics: [50, 500],
     fashion: [20, 150],
     lifestyle: [10, 80],
     accessories: [15, 120],
   };
 
-  const storeByCategory = {
+  const storeByCategory: Record<CategoryKey, string> = {
     electronics: 'tech-haven',
     fashion: 'urban-carry-co',
     lifestyle: 'wellness-and-living',
@@ -128,7 +130,44 @@ async function main() {
     Watch: 'https://images.unsplash.com/photo-1511385348-a52b4a160dc2',
   };
 
-  Object.entries(templates).forEach(([key, items]) => {
+  // Object.entries(templates).forEach(([key, items]) => {
+  //   items.forEach((item) => {
+  //     for (let i = 1; i <= 6; i++) {
+  //       const name = `${item} ${i}`;
+  //       const slug = `${item}-${i}`.toLowerCase();
+
+  //       const typedKey = key as CategoryKey;
+
+  //       const range = priceRanges[typedKey];
+  //       const storeSlug = storeByCategory[typedKey];
+
+
+  //       products.push({
+  //         name,
+  //         slug,
+  //         description: `High-quality ${item.toLowerCase()}`,
+  //         price: parseFloat(
+  //           (
+  //             Math.random() *
+  //               (range[key][1] - range[key][0]) +
+  //             range[key][0]
+  //           ).toFixed(2)
+  //         ),
+  //         images: [getImage(item)],
+  //         categoryId: categoryMap[key].id,
+  //         storeId: storeMap[storeSlug[key]].id,
+
+  //         inventory: {
+  //           create: {
+  //             quantity: rand(10, 150),
+  //           },
+  //         },
+  //       });
+  //     }
+  //   });
+  // });
+
+  (Object.entries(templates) as [CategoryKey, string[]][]).forEach(([key, items]) => {
     items.forEach((item) => {
       for (let i = 1; i <= 6; i++) {
         const name = `${item} ${i}`;
@@ -145,7 +184,13 @@ async function main() {
               priceRanges[key][0]
             ).toFixed(2)
           ),
-          images: [getImage(item)],
+
+          images: {
+            create: [
+              { url: getImage(item) }
+            ]
+          },
+
           categoryId: categoryMap[key].id,
           storeId: storeMap[storeByCategory[key]].id,
 
@@ -167,7 +212,11 @@ async function main() {
       description: 'Noise-canceling headphones',
       price: 199.99,
       // quantity: 50,
-      images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e'],
+      images: {
+        create: [
+          {url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e'},
+        ]
+      },
       categoryId: categoryMap.electronics.id,
       storeId: storeMap['tech-haven'].id,
       inventory: {
@@ -182,7 +231,12 @@ async function main() {
       description: 'Water-resistant backpack',
       price: 89.99,
       // quantity: 100,
-      images: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62'],
+      // images: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62'],
+      images: {
+        create: [
+          {url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62'},
+        ]
+      },
       categoryId: categoryMap.fashion.id,
       storeId: storeMap['urban-carry-co'].id,
       inventory: {
