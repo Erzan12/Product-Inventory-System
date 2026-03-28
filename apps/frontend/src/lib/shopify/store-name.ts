@@ -1,4 +1,4 @@
-import { parseShopifyDomain } from "./shopify/parse-shopify-domain"
+import { parseShopifyDomain } from "@/lib/shopify/parse-shopify-domain"
 
 export function getStoreName(): string {
   const rawDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN

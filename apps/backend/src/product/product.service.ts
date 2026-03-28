@@ -136,7 +136,7 @@ export class ProductService {
   // products.service.ts
   async findAll(query: GetProductsQueryDto
   ) {
-    const { search, categoryId, page = 1, limit = 10 } = query;
+    const { search, categoryId, page = 1, limit = 8 } = query;
     const skip = (page - 1) * limit;
 
     // 2. Build our conditional 'where' query

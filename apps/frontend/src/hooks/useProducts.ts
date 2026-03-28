@@ -7,11 +7,10 @@ export interface ProductResponse {
     totalItems: number;
     page: number;
     lastPage: number;
-    limit: number;
   };
 }
 
-export function useProducts(params?: { category?: string; search?: string; page?: number, limit?: number; }) {
+export function useProducts(params?: { category?: string; search?: string; page?: number; }) {
   return useQuery({
     queryKey: ['products', params],
     queryFn: async () => {

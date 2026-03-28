@@ -14,7 +14,7 @@ import { useProducts } from "@/hooks/useProducts"
 
 export function FeaturedProducts() {
   // Fetching from NestJS (limiting to 6 for the featured section)
-  const { data: apiResponse, isLoading, error } = useProducts({ limit: 6 })
+  const { data: apiResponse, isLoading, error } = useProducts({ limit: 8 })
   const { addItem } = useCart()
   
   // Track which products are being added to show individual loading states

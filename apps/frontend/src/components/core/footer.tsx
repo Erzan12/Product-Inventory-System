@@ -1,5 +1,5 @@
 import { Mail, Phone, MapPin } from "lucide-react"
-import { getStoreName } from "@/lib/store-name"
+import { getStoreName } from "@/lib/shopify/store-name"
 
 export function Footer() {
   // Get dynamic store name for footer branding

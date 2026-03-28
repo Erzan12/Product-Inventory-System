@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Star } from "lucide-react"
-import { getStoreName } from "@/lib/store-name"
+import { getStoreName } from "@/lib/shopify/store-name"
 // import { useProducts } from "@/hooks/shopify/use-shopify"
 import { useMemo } from "react"
 import Link from "next/link"
