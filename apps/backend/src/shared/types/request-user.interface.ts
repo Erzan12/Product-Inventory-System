@@ -1,5 +1,5 @@
 export interface RequestUser {
-  id: number;
+  id: string;
   email: string;
   role: string;
   token_version: number;

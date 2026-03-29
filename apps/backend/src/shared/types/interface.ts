@@ -6,6 +6,6 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export interface JwtPayload {
-  id: number;
+  id: string;
   tokenVersion: number;
 }
