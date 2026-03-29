@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
-import { api } from '@/lib/api-client';
+import { apiClient } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -65,7 +65,7 @@ export default function RegisterPage() {
 
     setIsLoading(true);
     try {
-      await api.post('/auth/register', {
+      await apiClient.post('/auth/register', {
         email: formData.email,
         password: formData.password,
       });
