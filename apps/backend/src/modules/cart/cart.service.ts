@@ -8,14 +8,14 @@ export class CartService {
     // key: userId, value: array of cart items
     constructor(private prisma: PrismaService) {}
 
-    async viewCart(userId: number) {
+    async viewCart(userId: string) {
     return this.prisma.cartItem.findMany({
         where: { userId },
         include: { product: true },
     });
     }
 
-    async addToCart(userId: number, productId: number, quantity: number) {
+    async addToCart(userId: string, productId: string, quantity: number) {
         console.log('Adding to cart:', { userId, productId, quantity }); // Debug log
 
         const product = await this.prisma.inventory.findUnique({
@@ -58,7 +58,7 @@ export class CartService {
         });
     }
 
-    async updateQuantity(userId: number, productId: number, quantity: number) {
+    async updateQuantity(userId: string, productId: string, quantity: number) {
         
         const product = await this.prisma.inventory.findUnique({
             where: { id: productId },
@@ -101,7 +101,7 @@ export class CartService {
         return successResponse(RESPONSE_MESSAGES.CART.ITEM_UPDATED, updated);
     }
 
-    async removeFromCart(userId: number, productId: number) {
+    async removeFromCart(userId: string, productId: string) {
         const deleted = await this.prisma.cartItem.delete({
             where: { userId_productId: { userId, productId } },
         });

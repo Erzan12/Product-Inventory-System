@@ -9,7 +9,7 @@ export class InvoiceController {
 
     //Plain Invoice Receipt
     @Get(':orderId')
-    getInvoice(@Param('orderId', ParseIntPipe) orderId: number) {
+    getInvoice(@Param('orderId', ParseIntPipe) orderId: string) {
         return this.invoiceService.generateBasicInvoice(orderId);
     }
 

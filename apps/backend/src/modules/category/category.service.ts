@@ -17,21 +17,21 @@ export class CategoryService {
     });
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prisma.category.findUnique({
       where: { id },
       include: { products: true },
     });
   }
 
-  update(id: number, data: UpdateCategoryDto) {
+  update(id: string, data: UpdateCategoryDto) {
     return this.prisma.category.update({
       where: { id },
       data,
     });
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.prisma.category.delete({
       where: { id },
     });

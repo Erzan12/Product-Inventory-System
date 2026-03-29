@@ -18,13 +18,13 @@ export class OrderController {
   @Patch(':id/status')
   @Roles('admin')
   updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) {
-    return this.orderService.UpdateOrderStatus(Number(id), dto);
+    return this.orderService.UpdateOrderStatus(id, dto);
   }
 
   // Admin only - Get product order history
   @Get('product/:productId/history')
   @Roles('admin')
-  getProductOrderHistory(@Param('productId', ParseIntPipe) productId: number) {
+  getProductOrderHistory(@Param('productId', ParseIntPipe) productId: string) {
     return this.orderService.getOrderHistoryByProduct(productId);
   }
 

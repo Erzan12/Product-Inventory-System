@@ -10,7 +10,7 @@ import { OrderStatus } from '../../shared/constants/enums.decorator';
 export class InvoiceService {
     constructor(private prisma: PrismaService) {}
 
-    async generateBasicInvoice(orderId: number) {
+    async generateBasicInvoice(orderId: string) {
         const order = await this.prisma.order.findUnique({
             where: { id: orderId },
             include: {

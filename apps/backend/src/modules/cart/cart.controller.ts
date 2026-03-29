@@ -8,7 +8,7 @@ export class CartController {
     @Post('/cart')
     async addToCart(
         @Request() req, 
-        @Body() body: { productId: number; quantity: number }
+        @Body() body: { productId: string; quantity: number }
     ) {
         const userId = req.user?.userId;
 
@@ -27,7 +27,7 @@ export class CartController {
     @Patch()
     updateQuantity(
         @Req() req,
-        @Body('productId') productId: number,
+        @Body('productId') productId: string,
         @Body('quantity') quantity: number,
     ) {
         const userId = req.user.userId; // pulled from JWT (ensure auth middleware is used)
@@ -37,7 +37,7 @@ export class CartController {
     @Delete()
     removeFromCart(
         @Req() req, 
-        @Body('productId') productId: number
+        @Body('productId') productId: string
     ) {
         const userId = req.user.userId;
         return this.cartService.removeFromCart(userId, productId);

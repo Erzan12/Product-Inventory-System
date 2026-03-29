@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class OrderItemDto {
   @IsInt()
-  productId!: number;
+  productId!: string;
 
   @IsInt()
   @IsPositive()

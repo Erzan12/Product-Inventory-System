@@ -27,7 +27,7 @@ export class OrderService {
     });
   }
 
-  async getUserOrders(userId: number) {
+  async getUserOrders(userId: string) {
     return this.prisma.order.findMany({
       where: { userId },
       include: {
@@ -75,7 +75,7 @@ export class OrderService {
   //   return order;
   // }
 
-  async UpdateOrderStatus(orderId: number, dto: UpdateOrderStatusDto) {
+  async UpdateOrderStatus(orderId: string, dto: UpdateOrderStatusDto) {
     return this.prisma.order.update({
       where: { id: orderId },
       data: { status: dto.status },
@@ -295,7 +295,7 @@ export class OrderService {
   //   });
   // }
 
-  async checkout(userId: number) {
+  async checkout(userId: string) {
 
     if (!userId) {
         throw new BadRequestException('User ID is missing');
@@ -576,7 +576,7 @@ export class OrderService {
   }
 
   //get users orders
-  async getMyOrders(userId: number) {
+  async getMyOrders(userId: string) {
     return this.prisma.order.findMany({
       where: { userId },
       include: {
@@ -593,7 +593,7 @@ export class OrderService {
   }
 
   //getOrderhistoryByProduct (User)
-  async getOrderHistoryByProduct(productId: number) {
+  async getOrderHistoryByProduct(productId: string) {
     return this.prisma.orderItem.findMany({
       where: { productId },
       include: {

@@ -58,7 +58,7 @@ export class ProductService {
   }
 
   //Delete product
-  async remove(id: number) {
+  async remove(id: string) {
     const orderItems = await this.prisma.orderItem.findMany({
       where: { productId: id },
     });
@@ -173,14 +173,14 @@ export class ProductService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return this.prisma.product.findUnique({
       where: { id },
       include: { category: true },
     });
   }
 
-  async update(id: number, data: UpdateProductDto) {
+  async update(id: string, data: UpdateProductDto) {
     return this.prisma.product.update({
        where: { id },
        data,

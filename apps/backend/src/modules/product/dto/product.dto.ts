@@ -1,4 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
+import strict from 'assert/strict';
 import { IsString, IsOptional, IsNumber, Min, IsPositive, IsInt, IsNotEmpty, isNotEmpty } from 'class-validator'
 
 export class CreateProductDto {
@@ -42,7 +43,7 @@ export class CreateProductDto {
     example: 2,
     description: 'The category ID the product belongs'
   })
-  categoryId!: number; // required for connect
+  categoryId!: string; // required for connect
 
   @IsString()
   @IsNotEmpty()
@@ -58,11 +59,11 @@ export class CreateProductDto {
     example: 'Store ID',
     description: 'The ID of the store'
   })
-  storeId!: number;
+  storeId!: string;
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
     @IsOptional()
     @IsInt()
-    categoryId?: number;
+    categoryId?: string;
 }

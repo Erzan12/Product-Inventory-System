@@ -30,21 +30,21 @@ export class ProductController {
   @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+    return this.productService.findOne(id);
   }
 
   // Admin only - Update product
   @Patch(':id')
   @Roles('admin')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+    return this.productService.update(id, updateProductDto);
   }
 
   // Admin only - Delete product
   @Delete(':id')
   @Roles('admin')
   remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+    return this.productService.remove(id);
   }
 
   // Admin only - Restock product
