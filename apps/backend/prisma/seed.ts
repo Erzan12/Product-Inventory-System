@@ -99,9 +99,6 @@ async function main() {
     return imageMap[name] || imageMap['Watch']; // fallback if not found
   };
 
-  // const getImage = (name: string) =>
-  //   `https://source.unsplash.com/featured/?${encodeURIComponent(name)}`;
-
   // 🛒 GENERATE PRODUCTS (100+)
   const products: any[] = [];
 
@@ -129,43 +126,6 @@ async function main() {
     Belt: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7',
     Watch: 'https://images.unsplash.com/photo-1511385348-a52b4a160dc2',
   };
-
-  // Object.entries(templates).forEach(([key, items]) => {
-  //   items.forEach((item) => {
-  //     for (let i = 1; i <= 6; i++) {
-  //       const name = `${item} ${i}`;
-  //       const slug = `${item}-${i}`.toLowerCase();
-
-  //       const typedKey = key as CategoryKey;
-
-  //       const range = priceRanges[typedKey];
-  //       const storeSlug = storeByCategory[typedKey];
-
-
-  //       products.push({
-  //         name,
-  //         slug,
-  //         description: `High-quality ${item.toLowerCase()}`,
-  //         price: parseFloat(
-  //           (
-  //             Math.random() *
-  //               (range[key][1] - range[key][0]) +
-  //             range[key][0]
-  //           ).toFixed(2)
-  //         ),
-  //         images: [getImage(item)],
-  //         categoryId: categoryMap[key].id,
-  //         storeId: storeMap[storeSlug[key]].id,
-
-  //         inventory: {
-  //           create: {
-  //             quantity: rand(10, 150),
-  //           },
-  //         },
-  //       });
-  //     }
-  //   });
-  // });
 
   (Object.entries(templates) as [CategoryKey, string[]][]).forEach(([key, items]) => {
     items.forEach((item) => {
@@ -211,7 +171,6 @@ async function main() {
       slug: 'premium-headphones',
       description: 'Noise-canceling headphones',
       price: 199.99,
-      // quantity: 50,
       images: {
         create: [
           {url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e'},
@@ -230,8 +189,6 @@ async function main() {
       slug: 'minimalist-backpack',
       description: 'Water-resistant backpack',
       price: 89.99,
-      // quantity: 100,
-      // images: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62'],
       images: {
         create: [
           {url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62'},
