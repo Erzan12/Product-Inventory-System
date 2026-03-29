@@ -6,11 +6,37 @@ import { Badge } from "@/components/ui/badge"
 import { Search, ShoppingCart, User, Menu } from "lucide-react"
 import { useState } from "react"
 import { useCart } from "@/contexts/cart-context"
-// import { getStoreName } from "@/lib/store-name"
+import { authApi } from "@/lib/api-client";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/contexts/auth-context"
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { state, dispatch } = useCart()
+
+  // Handle logout
+  const { isLoggedIn, logout } = useAuth();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const router = useRouter();
+
+
+  const handleLogout = async () => {
+    try {
+      // Tell backend to clear cookies
+      await authApi.logout(); 
+      
+      // Clear local data
+      logout();
+      setShowDropdown(false);
+      
+      // Redirect
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
   // Get dynamic store name
   const storeName = "ShopStack";
@@ -75,9 +101,43 @@ export function Navbar() {
               )}
             </Button>
 
-            <Button variant="ghost" size="sm" className="hidden md:flex">
-              <User className="w-5 h-5" />
-            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="hidden md:flex">
+                  <User className="w-5 h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-40">
+                {/* IF LOGGED OUT: Show these */}
+                {!isLoggedIn && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link href="/login">Login</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/sign-up">Sign Up</Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+
+                {/* IF LOGGED IN: Show these */}
+                {isLoggedIn && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile">Profile</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="text-red-600 focus:text-red-600 cursor-pointer" 
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Mobile Menu Button */}
             <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
