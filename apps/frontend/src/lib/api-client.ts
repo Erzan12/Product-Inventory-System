@@ -5,77 +5,72 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
-// Request interceptor to add auth token
+// Request interceptor with cookies session (MUCH SIMPLER NOW)
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
+    // no longer need to pull from localStorage! 
+    // browser automatically attaches the 'accessToken' cookie.
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor for error handling
+// Response Interceptor (The "Refresh" Logic)
 apiClient.interceptors.response.use(
   (response) => response,
-  (error: AxiosError) => {
-    if (error.response) {
-      // Server responded with error
-      const { status, data } = error.response;
-      
-      if (status === 401) {
-        // Clear invalid token and redirect to login
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
+    // If the error is 401 (Unauthorized) and we haven't tried to refresh yet
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true; // Mark that we are trying a refresh
+
+      try {
+        // Hit you refresh endpoint
+        // Note: This request will automatically include the 'refreshToken' cookie
+        await axios.post(
+          `${apiClient.defaults.baseURL}/auth/refreshToken`,
+          {},
+          { withCredentials: true }
+        );
+
+        // If successful, the backend has set a NEW 'accessToken' cookie.
+        // Now, retry the original request that failed!
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        // If refresh fails (e.g., refresh token is also expired)
+        // Full logout
         if (typeof window !== 'undefined') {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userEmail');
-          if (!window.location.pathname.includes('/login')) {
-            window.location.href = '/login';
-          }
+          // You don't clear cookies here (JS can't touch httpOnly cookies)
+          // Just redirect; your backend 'logout' or expiry handles the rest
+          window.location.href = '/login';
         }
+        return Promise.reject(refreshError);
       }
-      
-      return Promise.reject({
-        status,
-        message: (data as { message?: string })?.message || 'An error occurred',
-        data,
-      });
     }
-    
-    if (error.request) {
-      // Request made but no response
-      return Promise.reject({
-        status: 0,
-        message: 'Network error. Please check your connection.',
-      });
-    }
-    
-    return Promise.reject({
-      status: 0,
-      message: error.message || 'An unexpected error occurred',
-    });
+
+    return Promise.reject(error);
   }
 );
 
 // Auth API helpers
 export const authApi = {
   login: (email: string, password: string) =>
-    apiClient.post('/api/auth/login', { email, password }),
+    apiClient.post('/auth/login', { email, password }),
   
   register: (email: string, password: string, role?: string) =>
-    apiClient.post('/api/auth/register', { email, password, role }),
+    apiClient.post('/auth/register', { email, password, role }),
+
+  logout: () =>
+    apiClient.post('/auth/logout')
 };
 
 // Product API helpers
 export const productsApi = {
-  getAll: () => apiClient.get('/api/products'),
+  getAll: () => apiClient.get('/products'),
   getById: (id: number) => apiClient.get(`/products/${id}`),
   create: (data: { name: string; description?: string; price: number; quantity: number; categoryId?: number }) =>
     apiClient.post('/products', data),
