@@ -1,10 +1,11 @@
-import { Injectable, UnauthorizedException, BadRequestException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto, CreateUserProfileDto } from './dto/user.dto';
 import { Role } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RESPONSE_MESSAGES } from '../../common/constants/response-messages.constant';
+import { RequestUser } from '../../shared/types/request-user.interface';
 
 @Injectable()
 export class UserService {
@@ -38,5 +39,37 @@ export class UserService {
     //     }
     // }
 
-    // async createUserProfile()
+    async createUserProfile(requestUser: RequestUser, userId: number, dto: CreateUserProfileDto) {
+        const { firstName, middleName, lastName, avatarURL, address, city, country, bio, phone, dateOfBirth } = dto;
+        
+        const existingUser = await this.prisma.user.findUnique({
+            where: { id: requestUser.id }
+        })
+
+        if (!existingUser) {
+            throw new NotFoundException('User not found')
+        }
+
+        const userProfile = await this.prisma.userProfile.update({
+            where: { userId: requestUser.id },
+            data: {
+                firstName,
+                middleName,
+                lastName,
+                avatarURL,
+                address,
+                city,
+                country,
+                bio,
+                phone,
+                dateOfBirth: new Date(),
+            },
+        })
+
+        return {
+            status: 'success',
+            message: `User ${userProfile.firstName} ${userProfile.lastName} profile has been added`,
+            userProfile,
+        }
+    }
 }
